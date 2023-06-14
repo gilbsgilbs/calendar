@@ -39,6 +39,8 @@ const state = {
 	showTasks: null,
 	showWeekends: null,
 	showWeekNumbers: null,
+	timeFormat: null,
+	firstDayOfWeek: null,
 	skipPopover: null,
 	slotDuration: null,
 	defaultReminder: null,
@@ -97,6 +99,28 @@ const mutations = {
 	 */
 	toggleWeekNumberEnabled(state) {
 		state.showWeekNumbers = !state.showWeekNumbers
+	},
+
+	/**
+	 * Updates the user's preferred timeFormat
+	 *
+	 * @param {object} state The Vuex state
+	 * @param {object} data The destructuring object
+	 * @param {string} data.timeFormat The new time format
+	 */
+	setTimeFormat(state, { timeFormat }) {
+		state.timeFormat = timeFormat
+	},
+
+	/**
+	 * Updates the user's preferred firstDayOfWeek
+	 *
+	 * @param {object} state The Vuex state
+	 * @param {object} data The destructuring object
+	 * @param {string} data.firstDayOfWeek The new first day of week
+	 */
+	setFirstDayOfWeek(state, { firstDayOfWeek }) {
+		state.firstDayOfWeek = firstDayOfWeek
 	},
 
 	/**
@@ -166,13 +190,15 @@ const mutations = {
 	 * @param {boolean} data.canSubscribeLink
 	 * @param {string} data.attachmentsFolder Default user's attachments folder
 	 */
-	loadSettingsFromServer(state, { appVersion, eventLimit, firstRun, showWeekNumbers, showTasks, showWeekends, skipPopover, slotDuration, defaultReminder, talkEnabled, tasksEnabled, timezone, hideEventExport, forceEventAlarmType, disableAppointments, canSubscribeLink, attachmentsFolder }) {
+	loadSettingsFromServer(state, { appVersion, eventLimit, firstRun, showWeekNumbers, timeFormat, firstDayOfWeek, showTasks, showWeekends, skipPopover, slotDuration, defaultReminder, talkEnabled, tasksEnabled, timezone, hideEventExport, forceEventAlarmType, disableAppointments, canSubscribeLink, attachmentsFolder }) {
 		logInfo(`
 Initial settings:
 	- AppVersion: ${appVersion}
 	- EventLimit: ${eventLimit}
 	- FirstRun: ${firstRun}
 	- ShowWeekNumbers: ${showWeekNumbers}
+	- TimeFormat: ${timeFormat}
+	- FirstDayOfWeek: ${firstDayOfWeek}
 	- ShowTasks: ${showTasks}
 	- ShowWeekends: ${showWeekends}
 	- SkipPopover: ${skipPopover}
@@ -192,6 +218,8 @@ Initial settings:
 		state.eventLimit = eventLimit
 		state.firstRun = firstRun
 		state.showWeekNumbers = showWeekNumbers
+		state.timeFormat = timeFormat
+		state.firstDayOfWeek = firstDayOfWeek
 		state.showTasks = showTasks
 		state.showWeekends = showWeekends
 		state.skipPopover = skipPopover
@@ -368,6 +396,42 @@ const actions = {
 	 */
 	async setInitialView(context, { initialView }) {
 		await setConfig('view', initialView)
+	},
+
+	/**
+	 * Updates the user's preferred timeFormat
+	 *
+	 * @param {object} vuex The Vuex destructuring object
+	 * @param {object} vuex.state The Vuex state
+	 * @param {Function} vuex.commit The Vuex commit Function
+	 * @param {object} data The destructuring object
+	 * @param {string} data.timeFormat The new time format
+	 */
+	async setTimeFormat({ state, commit }, { timeFormat }) {
+		if (state.timeFormat === timeFormat) {
+			return
+		}
+
+		await setConfig('timeFormat', timeFormat)
+		commit('setTimeFormat', { timeFormat })
+	},
+
+	/**
+	 * Updates the user's preferred firstDayOfWeek
+	 *
+	 * @param {object} vuex The Vuex destructuring object
+	 * @param {object} vuex.state The Vuex state
+	 * @param {Function} vuex.commit The Vuex commit Function
+	 * @param {object} data The destructuring object
+	 * @param {string} data.firstDayOfWeek The new first day of week
+	 */
+	async setFirstDayOfWeek({ state, commit }, { firstDayOfWeek }) {
+		if (state.firstDayOfWeek === firstDayOfWeek) {
+			return
+		}
+
+		await setConfig('firstDayOfWeek', firstDayOfWeek)
+		commit('setFirstDayOfWeek', { firstDayOfWeek })
 	},
 
 	/**

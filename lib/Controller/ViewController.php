@@ -85,6 +85,8 @@ class ViewController extends Controller {
 		$defaultInitialView = $this->config->getAppValue($this->appName, 'currentView', 'dayGridMonth');
 		$defaultShowWeekends = $this->config->getAppValue($this->appName, 'showWeekends', 'yes');
 		$defaultWeekNumbers = $this->config->getAppValue($this->appName, 'showWeekNr', 'no');
+		$defaultTimeFormat = $this->config->getAppValue($this->appName, 'timeFormat', 'default');
+		$defaultFirstDayOfWeek = $this->config->getAppValue($this->appName, 'firstDayOfWeek', 'default');
 		$defaultSkipPopover = $this->config->getAppValue($this->appName, 'skipPopover', 'no');
 		$defaultTimezone = $this->config->getAppValue($this->appName, 'timezone', 'automatic');
 		$defaultSlotDuration = $this->config->getAppValue($this->appName, 'slotDuration', '00:30:00');
@@ -97,6 +99,8 @@ class ViewController extends Controller {
 		$initialView = $this->getView($this->config->getUserValue($this->userId, $this->appName, 'currentView', $defaultInitialView));
 		$showWeekends = $this->config->getUserValue($this->userId, $this->appName, 'showWeekends', $defaultShowWeekends) === 'yes';
 		$showWeekNumbers = $this->config->getUserValue($this->userId, $this->appName, 'showWeekNr', $defaultWeekNumbers) === 'yes';
+		$timeFormat = $this->config->getUserValue($this->userId, $this->appName, 'timeFormat', $defaultTimeFormat);
+		$firstDayOfWeek = $this->config->getUserValue($this->userId, $this->appName, 'firstDayOfWeek', $defaultFirstDayOfWeek);
 		$skipPopover = $this->config->getUserValue($this->userId, $this->appName, 'skipPopover', $defaultSkipPopover) === 'yes';
 		$timezone = $this->config->getUserValue($this->userId, $this->appName, 'timezone', $defaultTimezone);
 		$attachmentsFolder = $this->config->getUserValue($this->userId, 'dav', 'attachmentsFolder', '/Calendar');
@@ -121,6 +125,8 @@ class ViewController extends Controller {
 		$this->initialStateService->provideInitialState('initial_view', $initialView);
 		$this->initialStateService->provideInitialState('show_weekends', $showWeekends);
 		$this->initialStateService->provideInitialState('show_week_numbers', $showWeekNumbers);
+		$this->initialStateService->provideInitialState('time_format', $timeFormat);
+		$this->initialStateService->provideInitialState('first_day_of_week', $firstDayOfWeek);
 		$this->initialStateService->provideInitialState('skip_popover', $skipPopover);
 		$this->initialStateService->provideInitialState('talk_enabled', $talkEnabled);
 		$this->initialStateService->provideInitialState('talk_api_version', $talkApiVersion);

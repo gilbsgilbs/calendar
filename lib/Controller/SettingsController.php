@@ -78,6 +78,10 @@ class SettingsController extends Controller {
 				return $this->showWeekends($value);
 			case 'showWeekNr':
 				return $this->setShowWeekNr($value);
+			case 'timeFormat':
+				return $this->setTimeFormat($value);
+			case 'firstDayOfWeek':
+				return $this->setFirstDayOfWeek($value);
 			case 'firstRun':
 				return $this->setFirstRun();
 			case 'timezone':
@@ -353,6 +357,56 @@ class SettingsController extends Controller {
 				$this->userId,
 				$this->appName,
 				'defaultReminder',
+				$value
+			);
+		} catch (\Exception $e) {
+			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		return new JSONResponse();
+	}
+
+	/**
+	 * sets timeFormat for user
+	 *
+	 * @param string $value User-selected option for time_format in agenda view
+	 * @return JSONResponse
+	 */
+	private function setTimeFormat(string $value):JSONResponse {
+		if (!\in_array($value, ['default', '12h', '24h'])) {
+			return new JSONResponse([], Http::STATUS_UNPROCESSABLE_ENTITY);
+		}
+
+		try {
+			$this->config->setUserValue(
+				$this->userId,
+				$this->appName,
+				'timeFormat',
+				$value
+			);
+		} catch (\Exception $e) {
+			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		return new JSONResponse();
+	}
+
+	/**
+	 * sets firstDayOfWeek for user
+	 *
+	 * @param string $value User-selected option for first_day_of_week in agenda view
+	 * @return JSONResponse
+	 */
+	private function setFirstDayOfWeek(string $value):JSONResponse {
+		if (!\in_array($value, ['default', 'monday', 'sunday'])) {
+			return new JSONResponse([], Http::STATUS_UNPROCESSABLE_ENTITY);
+		}
+
+		try {
+			$this->config->setUserValue(
+				$this->userId,
+				$this->appName,
+				'firstDayOfWeek',
 				$value
 			);
 		} catch (\Exception $e) {

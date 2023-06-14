@@ -95,6 +95,8 @@ export default {
 			skipPopover: state => state.settings.skipPopover,
 			showWeekends: state => state.settings.showWeekends,
 			showWeekNumbers: state => state.settings.showWeekNumbers,
+			timeFormat: state => state.settings.timeFormat,
+			firstDayOfWeek: state => state.settings.firstDayOfWeek,
 			slotDuration: state => state.settings.slotDuration,
 			showTasks: state => state.settings.showTasks,
 			timezone: state => state.settings.timezone,
@@ -123,6 +125,11 @@ export default {
 				// Localization
 				...getDateFormattingConfig(),
 				...getFullCalendarLocale(),
+				...(
+					this.firstDayOfWeek === 'default'
+						? {}
+						: {firstDay: ['sunday', 'monday'].indexOf(this.firstDayOfWeek)}
+				),
 				// Rendering
 				dayHeaderDidMount,
 				eventDidMount,

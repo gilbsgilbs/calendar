@@ -60,6 +60,28 @@
 				@update:checked="toggleWeekNumberEnabled">
 				{{ $t('calendar', 'Show week numbers') }}
 			</ActionCheckbox>
+			<li class="settings-fieldset-interior-item settings-fieldset-interior-item">
+				<label for="timeFormat">{{ $t('calendar', 'Time format') }}</label>
+				<Multiselect :id="timeFormat"
+					:allow-empty="false"
+					:options="timeFormatOptions"
+					:value="selectedTimeFormat"
+					:disabled="savingTimeFormat"
+					track-by="value"
+					label="label"
+					@select="changeTimeFormat" />
+			</li>
+			<li class="settings-fieldset-interior-item settings-fieldset-interior-item">
+				<label for="firstDayOfWeek">{{ $t('calendar', 'First day of week') }}</label>
+				<Multiselect :id="firstDayOfWeek"
+					:allow-empty="false"
+					:options="firstDayOfWeekOptions"
+					:value="selectedFirstDayOfWeek"
+					:disabled="savingFirstDayOfWeek"
+					track-by="value"
+					label="label"
+					@select="changeFirstDayOfWeek" />
+			</li>
 			<li class="settings-fieldset-interior-item settings-fieldset-interior-item--slotDuration">
 				<label for="slotDuration">{{ $t('calendar', 'Time increments') }}</label>
 				<Multiselect :id="slotDuration"
@@ -182,6 +204,8 @@ export default {
 			savingEventLimit: false,
 			savingTasks: false,
 			savingPopover: false,
+			savingTimeFormat: false,
+			savingFirstDayOfWeek: false,
 			savingSlotDuration: false,
 			savingDefaultReminder: false,
 			savingWeekend: false,
@@ -199,6 +223,8 @@ export default {
 			showTasks: state => state.settings.showTasks,
 			showWeekends: state => state.settings.showWeekends,
 			showWeekNumbers: state => state.settings.showWeekNumbers,
+			timeFormat: state => state.settings.timeFormat,
+			firstDayOfWeek: state => state.settings.firstDayOfWeek,
 			slotDuration: state => state.settings.slotDuration,
 			defaultReminder: state => state.settings.defaultReminder,
 			timezone: state => state.settings.timezone,
@@ -222,6 +248,38 @@ export default {
 		},
 		settingsTitle() {
 			return this.$t('calendar', 'Calendar settings')
+		},
+		timeFormatOptions() {
+			return [
+			{
+				label: this.$t('calendar', 'Default'),
+				value: 'default',
+			}, {
+				label: '24h',
+				value: '24h',
+			}, {
+				label: '12h',
+				value: '12h',
+			}]
+		},
+		selectedTimeFormat() {
+			return this.timeFormatOptions.find(o => o.value === this.timeFormat)
+		},
+		firstDayOfWeekOptions() {
+			return [
+			{
+				label: this.$t('calendar', 'Default'),
+				value: 'default',
+			}, {
+				label: moment.localeData(this.locale).weekdays()[1],
+				value: 'monday',
+			}, {
+				label: moment.localeData(this.locale).weekdays()[0],
+				value: 'sunday',
+			}]
+		},
+		selectedFirstDayOfWeek() {
+			return this.firstDayOfWeekOptions.find(o => o.value === this.firstDayOfWeek)
 		},
 		slotDurationOptions() {
 			return [{
@@ -346,6 +404,54 @@ export default {
 				showError(this.$t('calendar', 'New setting was not saved successfully.'))
 				this.savingWeekNumber = false
 			}
+		},
+		/**
+		 * Updates the setting for time format
+		 *
+		 * @param {object} option The new selected value
+		 */
+		async changeTimeFormat(option) {
+			if (!option) {
+				return
+			}
+
+			// change to loading status
+			this.savingTimeFormat = true
+
+			try {
+				await this.$store.dispatch('setTimeFormat', {
+					timeFormat: option.value,
+				})
+			} catch (error) {
+				console.error(error)
+				showError(this.$t('calendar', 'New setting was not saved successfully.'))
+			}
+
+			this.savingTimeFormat = false
+		},
+		/**
+		 * Updates the setting for first day of week
+		 *
+		 * @param {object} option The new selected value
+		 */
+		async changeFirstDayOfWeek(option) {
+			if (!option) {
+				return
+			}
+
+			// change to loading status
+			this.savingFirstDayOfWeek = true
+
+			try {
+				await this.$store.dispatch('setFirstDayOfWeek', {
+					firstDayOfWeek: option.value,
+				})
+			} catch (error) {
+				console.error(error)
+				showError(this.$t('calendar', 'New setting was not saved successfully.'))
+			}
+
+			this.savingFirstDayOfWeek = false
 		},
 		/**
 		 * Updates the setting for slot duration

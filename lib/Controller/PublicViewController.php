@@ -114,6 +114,8 @@ class PublicViewController extends Controller {
 		$defaultInitialView = $this->config->getAppValue($this->appName, 'currentView', 'dayGridMonth');
 		$defaultShowWeekends = $this->config->getAppValue($this->appName, 'showWeekends', 'yes');
 		$defaultWeekNumbers = $this->config->getAppValue($this->appName, 'showWeekNr', 'no');
+		$defaultTimeFormat = $this->config->getAppValue($this->appName, 'timeFormat', 'default');
+		$defaultFirstDayOfWeek = $this->config->getAppValue($this->appName, 'firstDayOfWeek', 'default');
 		$defaultSkipPopover = $this->config->getAppValue($this->appName, 'skipPopover', 'yes');
 		$defaultTimezone = $this->config->getAppValue($this->appName, 'timezone', 'automatic');
 		$defaultSlotDuration = $this->config->getAppValue($this->appName, 'slotDuration', '00:30:00');
@@ -129,6 +131,8 @@ class PublicViewController extends Controller {
 		$this->initialStateService->provideInitialState($this->appName, 'initial_view', $defaultInitialView);
 		$this->initialStateService->provideInitialState($this->appName, 'show_weekends', ($defaultShowWeekends === 'yes'));
 		$this->initialStateService->provideInitialState($this->appName, 'show_week_numbers', ($defaultWeekNumbers === 'yes'));
+		$this->initialStateService->provideInitialState($this->appName, 'time_format', $defaultTimeFormat);
+		$this->initialStateService->provideInitialState($this->appName, 'first_day_of_week', $defaultFirstDayOfWeek);
 		$this->initialStateService->provideInitialState($this->appName, 'skip_popover', ($defaultSkipPopover === 'yes'));
 		$this->initialStateService->provideInitialState($this->appName, 'talk_enabled', false);
 		$this->initialStateService->provideInitialState($this->appName, 'talk_api_version', 'v1');
